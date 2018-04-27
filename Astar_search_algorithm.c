@@ -16,9 +16,6 @@
 #define BARRIER 3
 #define PATH 4
 
-int map_height;
-int map_width;
-
 int openset_size = 0;
 int closedset_size = 0;
 int pathset_size = 0;
@@ -153,7 +150,7 @@ struct node *beside(struct node *openset, struct node *closedset,
 	return openset;
 }
 
-struct node *AStar(int map[map_height][map_width], struct node *start,
+struct node *AStar(int (*map)[], int map_height,int map_width,struct node *start,
 									 struct node *goal)
 {
 	struct node *openset = addToOpenset(NULL, start);
@@ -188,7 +185,11 @@ struct node *AStar(int map[map_height][map_width], struct node *start,
 	return NULL;
 }
 
-void printMap(int map[map_height][map_width])
+int[] (*generateMap)(int map_width,int map_height) {
+
+}
+
+void printMap(int (*map)[],int map_height,int map_width)
 {
 	for (int i = 0; i < map_height; ++i) {
 		for (int j = 0; j < map_width; ++j) {
@@ -201,29 +202,16 @@ void printMap(int map[map_height][map_width])
 int main(int argc, char *argv[])
 {
 	//0 for space,1 for start,2 for goal,4 for block
+	int map_height,map_width;
 	printf("map_height:");
 	scanf("%d", &map_height);
 	printf("map_width:");
 	scanf("%d", &map_width);
-	int map[map_height][map_width];
-	printf
-			("Please input the map(0 for space, 1 for start, 2 for goal, 3 for barrier):\n");
-	int input = 0;
+	int map[map_height][map_width]=generateMap(map_height,map_width);
 	struct node start, goal;
-	for (int i = 0; i < map_height * map_width; ++i) {
-		scanf("%d", &input);
-		map[i / map_width][i % map_width] = input;
-		if (input == 1) {
-			start.x = i / map_width;
-			start.y = i % map_width;
-		} else if (input == 2) {
-			goal.x = i / map_width;
-			goal.y = i % map_width;
-		}
-	}
 	printf("map:\n");
-	printMap(map);
-	struct node *path = AStar(map, &start, &goal);
+	printMap(map,map_height,map_width);
+	struct node *path = AStar(map,map_height,map_width, &start, &goal);
 	if (path == NULL) {
 		//寻路失败
 		printf("failed\n");
@@ -237,7 +225,7 @@ int main(int argc, char *argv[])
 		}
 		//输出路径地图
 		printf("\npath:\n");
-		printMap(map);
+		printMap(map,map_height,map_width);
 	}
 	return 0;
 }
