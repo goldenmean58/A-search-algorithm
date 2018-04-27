@@ -6,28 +6,15 @@
  * Function : generate the map by using prim algorithm
 ******************************************************************/
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<time.h>
-#define SPACE 0
-#define START 1
-#define GOAL 2
-#define BARRIER 3
-#define PATH 4
-
-struct walls {
-	int x, y;
-	int from_x, from_y;
-	struct walls *next;
-};
+#include "main.h"
 
 void printMap(int map_height, int map_width, int **map)
 {
 	//output boundary
 	//up boundary
-	   for(int i=0;i<map_width+2;++i){
-	   printf("█");
-	   } 
+	for (int i = 0; i < map_width + 2; ++i) {
+		printf("█");
+	}
 	printf("\n");
 	for (int i = 0; i < map_height; ++i) {
 		printf("█");
@@ -53,9 +40,9 @@ void printMap(int map_height, int map_width, int **map)
 		printf("█");
 		printf("\n");
 	}
-	   for (int i = 0; i < map_width+2; ++i) {
-	   printf("█");
-	   }
+	for (int i = 0; i < map_width + 2; ++i) {
+		printf("█");
+	}
 	printf("\n");
 }
 
@@ -241,7 +228,7 @@ int **generateMap(int map_height, int map_width)
 	int list_count = 0;
 	//1.all are walls
 	int **map = (int **)malloc(sizeof(int *) * map_height);
-	for (int i = 0; i < map_height; i++) {  
+	for (int i = 0; i < map_height; i++) {
 		map[i] = (int *)malloc(sizeof(int) * map_width);
 	}
 	for (int i = 0; i < map_height; ++i) {
@@ -251,8 +238,8 @@ int **generateMap(int map_height, int map_width)
 	}
 	//2.random start and make it maze and add its walls into wall_list
 	srand((unsigned)time(NULL));
-	int s_x, s_y;//start   (x,y)
-	int g_x,g_y;//goal   (x,y)
+	int s_x, s_y;									//start   (x,y)
+	int g_x, g_y;									//goal   (x,y)
 	s_x = rand() % map_height;
 	s_y = rand() % map_width;
 	map[s_x][s_y] = START;
@@ -263,7 +250,7 @@ int **generateMap(int map_height, int map_width)
 		int contrary_x;
 		int contrary_y;
 		struct walls *wall = NULL;
-		while(1){
+		while (1) {
 			int random = rand() % list_count;
 			wall = wall_list;
 			for (int i = 0; i < random; ++i) {
@@ -272,16 +259,17 @@ int **generateMap(int map_height, int map_width)
 			//6.Is only one of the two cells that the wall divides visited?
 			contrary_x = 2 * wall->x - wall->from_x;
 			contrary_y = 2 * wall->y - wall->from_y;
-			if(contrary_x<0||contrary_y<0||contrary_x>=map_height||contrary_y>=map_width){
-				wall_list=removeWall(wall_list,wall); //bad wall make the passage out of boundary, remove it
+			if (contrary_x < 0 || contrary_y < 0 || contrary_x >= map_height
+					|| contrary_y >= map_width) {
+				wall_list = removeWall(wall_list, wall);	//bad wall make the passage out of boundary, remove it
 				list_count--;
 			} else {
-				g_x=contrary_x;
-				g_y=contrary_y;
+				g_x = contrary_x;
+				g_y = contrary_y;
 				break;
 			}
-			if(list_count==0) {
-				map[g_x][g_y]=GOAL;
+			if (list_count == 0) {
+				map[g_x][g_y] = GOAL;
 				return map;
 			}
 		};
@@ -304,10 +292,11 @@ int **generateMap(int map_height, int map_width)
 		}
 	}
 	//if there is no wall in the list, then output the map
-	map[g_x][g_y]=GOAL;
+	map[g_x][g_y] = GOAL;
 	return map;
 }
 
+/*
 int main(int argc, char *argv[])
 {
 	int map_height, map_width;
@@ -318,3 +307,4 @@ int main(int argc, char *argv[])
 	printMap(map_height, map_width, map);
 	return 0;
 }
+*/

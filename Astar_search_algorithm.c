@@ -1,4 +1,3 @@
-
 /******************************************************************
  * FileName : Astar_search_algorithm.c
  * Author   : Lishuxiang
@@ -7,27 +6,11 @@
  * Function : A* search algorithm
 ******************************************************************/
 
-#include<stdio.h>
-#include<stdlib.h>
-
-#define SPACE 0
-#define START 1
-#define GOAL 2
-#define BARRIER 3
-#define PATH 4
+#include"main.h"
 
 int openset_size = 0;
 int closedset_size = 0;
 int pathset_size = 0;
-
-struct node {
-	int x, y;
-	int f, g, h;									//f(x)=g(x)+h(x)
-	struct node *p;								//point ot parent node
-	struct node *next;
-	int is_openset;
-	int is_closedset;
-};
 
 struct node *addToOpenset(struct node *set, struct node *which)
 {
@@ -38,7 +21,7 @@ struct node *addToOpenset(struct node *set, struct node *which)
 	if (openset_size - 1 == 0) {
 		return which;
 	}
-	while (set->next != NULL) {
+	while (set->next != NULL) { //XXX BUG happens when Astar a map that has been Astared.
 		set = set->next;
 	}
 	set->next = which;
@@ -150,12 +133,18 @@ struct node *beside(struct node *openset, struct node *closedset,
 	return openset;
 }
 
-struct node *AStar(int (*map)[], int map_height,int map_width,struct node *start,
-									 struct node *goal)
+struct node *AStar(int **map, int map_height, int map_width, int s_x, int s_y,
+									 int g_x, int g_y)
 {
+	struct node *start = malloc(sizeof(struct node));
+	struct node *goal = malloc(sizeof(struct node));
 	struct node *openset = addToOpenset(NULL, start);
 	struct node *closedset = NULL;
 	struct node *now;
+	start->x = s_x;
+	start->y = s_y;
+	goal->x = g_x;
+	goal->y = g_y;
 	start->p = NULL;
 	while (openset_size != 0) {
 		now = f_min(openset);
@@ -185,20 +174,7 @@ struct node *AStar(int (*map)[], int map_height,int map_width,struct node *start
 	return NULL;
 }
 
-int[] (*generateMap)(int map_width,int map_height) {
-
-}
-
-void printMap(int (*map)[],int map_height,int map_width)
-{
-	for (int i = 0; i < map_height; ++i) {
-		for (int j = 0; j < map_width; ++j) {
-			printf("%d ", map[i][j]);
-		}
-		printf("\n");
-	}
-}
-
+/*
 int main(int argc, char *argv[])
 {
 	//0 for space,1 for start,2 for goal,4 for block
@@ -207,11 +183,22 @@ int main(int argc, char *argv[])
 	scanf("%d", &map_height);
 	printf("map_width:");
 	scanf("%d", &map_width);
-	int map[map_height][map_width]=generateMap(map_height,map_width);
-	struct node start, goal;
-	printf("map:\n");
-	printMap(map,map_height,map_width);
-	struct node *path = AStar(map,map_height,map_width, &start, &goal);
+	int **map=generateMap(map_height,map_width);
+	//find start and goal
+	int s_x,s_y,g_x,g_y;
+	for (int i = 0; i < map_height; ++i) {
+		for(int j=0;j < map_width;++j) {
+			if(map[i][j]==START){
+				s_x=i;
+				s_y=j;
+			}
+			if(map[i][j]==GOAL){
+				g_x=i;
+				g_y=j;
+			}
+		}
+	}
+	struct node *path = AStar(map,map_height,map_width,s_x,s_y,g_x,g_y);
 	if (path == NULL) {
 		//寻路失败
 		printf("failed\n");
@@ -225,7 +212,8 @@ int main(int argc, char *argv[])
 		}
 		//输出路径地图
 		printf("\npath:\n");
-		printMap(map,map_height,map_width);
+		printMap(map_height,map_width,map);
 	}
 	return 0;
 }
+*/
