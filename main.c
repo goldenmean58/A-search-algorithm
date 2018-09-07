@@ -102,38 +102,11 @@ int main(int argc, char *argv[])
 	struct node *path;
 	while (1) {
 		ch = getchar();
-		map[s_x][s_y] = SPACE;
-		switch (ch) {
-		case 'w':									//up
-		case 'W':
-			if (s_x > 0 && map[s_x - 1][s_y] != BARRIER) {
-				s_x--;
-			}
-			break;
-		case 's':									//down
-		case 'S':
-			if (s_x < map_height - 1 && map[s_x + 1][s_y] != BARRIER) {
-				s_x++;
-			}
-			break;
-		case 'a':									//left
-		case 'A':
-			if (s_y > 0 && map[s_x][s_y - 1] != BARRIER) {
-				s_y--;
-			}
-			break;
-		case 'd':									//right
-		case 'D':
-			if (s_y < map_width - 1 && map[s_x][s_y + 1] != BARRIER) {
-				s_y++;
-			}
-			break;
-		case 27:
+		if (ch == 'q' || ch == 'Q') {
 			set_disp_mode(STDIN_FILENO, 1);
 			return 0;
-			break;
-		case 'g':
-		case 'G':
+		}
+		if (ch == 'g' || ch == 'G') {
 			path = AStar(map, map_height, map_width, s_x, s_y, g_x, g_y);
 			if (path == NULL) {
 				//寻路失败
@@ -146,6 +119,34 @@ int main(int argc, char *argv[])
 					}
 					path = path->p;
 				}
+			}
+		}
+		if (ch == 27) {
+			ch = getchar();
+			if (ch != 91)
+				continue;
+			map[s_x][s_y] = SPACE;
+			ch = getchar();
+			switch (ch) {
+			case 65:									//up
+				if (s_x > 0 && map[s_x - 1][s_y] != BARRIER) {
+					s_x--;
+				}
+				break;
+			case 66:									//down
+				if (s_x < map_height - 1 && map[s_x + 1][s_y] != BARRIER) {
+					s_x++;
+				}
+				break;
+			case 68:									//left
+				if (s_y > 0 && map[s_x][s_y - 1] != BARRIER) {
+					s_y--;
+				}
+				break;
+			case 67:									//right
+				if (s_y < map_width - 1 && map[s_x][s_y + 1] != BARRIER) {
+					s_y++;
+				}
 				break;
 			}
 		}
@@ -153,7 +154,7 @@ int main(int argc, char *argv[])
 		system("clear");
 		printMap(map_height, map_width, map);
 		printf
-				("Note: W for up, S for down, A for left, D for right. + is your location and * is your goal. Esc for exit.\n");
+				("Note: ↑ for up, ↓ for down, ← for left, → for right. + is your location and * is your goal. Q for exit.\n");
 		if (s_x == g_x && s_y == g_y) {
 			printf("You win.\n");
 			break;

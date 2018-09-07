@@ -21,7 +21,7 @@ struct node *addToOpenset(struct node *set, struct node *which)
 	if (openset_size - 1 == 0) {
 		return which;
 	}
-	while (set->next != NULL) { //XXX BUG happens when Astar a map that has been Astared. set=NULL
+	while (set->next != NULL) {
 		set = set->next;
 	}
 	set->next = which;
@@ -139,8 +139,8 @@ struct node *AStar(int **map, int map_height, int map_width, int s_x, int s_y,
 	openset_size=0;
 	closedset_size=0;
 	pathset_size=0;
-	struct node *start = malloc(sizeof(struct node));
-	struct node *goal = malloc(sizeof(struct node));
+	struct node *start = (struct node*)malloc(sizeof(struct node));
+	struct node *goal = (struct node*)malloc(sizeof(struct node));
 	struct node *openset = addToOpenset(NULL, start);
 	struct node *closedset = NULL;
 	struct node *now;
